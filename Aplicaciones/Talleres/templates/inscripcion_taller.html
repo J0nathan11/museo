@@ -1,0 +1,68 @@
+{% extends './plantilla.html' %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Inscripción al Taller</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h4>{{ tema_tall }}</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{% url 'inscripcion_taller' id_tall=id_tall %}" id="frm_inscripcion">
+                        {% csrf_token %}
+                
+                        <div class="form-group">
+                            <label for="cedula_cli">Cédula:</label>
+                            <input type="text" name="cedula_cli" id="cedula_cli" class="form-control" placeholder="Ingrese su cédula" required>
+                        </div>
+                        
+                        <div class="row mt-4" style="text-align: center;">
+                            <div class="col-6">
+                                <button type="submit" class="btn btn-primary btn-block">Inscribirse</button>
+                            </div>
+                            <div class="col-6">
+                                <!-- Botón para regresar al detalle del taller -->
+                                <a href="{% url 'detalle_taller' id_tall=id_tall %}" class="btn btn-secondary btn-block">Volver al Taller</a>
+                            </div>
+                        </div>
+
+                        {% if messages %}
+                            <div class="alert alert-danger mt-3">
+                                <ul>
+                                    {% for message in messages %}
+                                        <li>{{ message }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Validación simple para el formulario
+    $("#frm_inscripcion").validate({
+        rules: {
+            cedula_cli: {
+                required: true,
+                digits: true,
+                minlength: 8,
+                maxlength: 10
+            }
+        },
+        messages: {
+            cedula_cli: {
+                required: "Por favor ingrese su cédula",
+                digits: "La cédula debe ser un número válido",
+                minlength: "La cédula debe tener al menos 8 dígitos",
+                maxlength: "La cédula no debe exceder los 10 dígitos"
+            }
+        }
+    });
+</script>
+{% endblock %}

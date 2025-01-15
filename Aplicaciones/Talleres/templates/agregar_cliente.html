@@ -1,0 +1,99 @@
+{% extends './plantilla.html' %}
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h4>Agregar Cliente</h4>
+                </div>
+                <div class="card-body">
+                    <form action="{% url 'agregar_cliente' %}" method="POST" id="frm_cliente">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="cedula_cli">Cédula:</label>
+                            <input type="text" name="cedula_cli" id="cedula_cli" class="form-control" placeholder="Ingrese la cédula" required >
+                        </div>
+                        <div class="form-group">
+                            <label for="nombre_cli">Nombre:</label>
+                            <input type="text" name="nombre_cli" id="nombre_cli" class="form-control" placeholder="Ingrese el nombre" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="apellido_cli">Apellido:</label>
+                            <input type="text" name="apellido_cli" id="apellido_cli" class="form-control" placeholder="Ingrese el apellido" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="telefono_cli">Teléfono:</label>
+                            <input type="text" name="telefono_cli" id="telefono_cli" class="form-control" placeholder="Ingrese el teléfono" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="correo_cli">Correo:</label>
+                            <input type="email" name="correo_cli" id="correo_cli" class="form-control" placeholder="Ingrese el correo electrónico" required>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-outline-primary">Guardar</button>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <a href="{% url 'inicio' %}" class="btn btn-outline-secondary">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Validación simple para el formulario
+    $("#frm_cliente").validate({
+        rules: {
+            cedula_cli: {
+                required: true,
+                digits: true,  
+                minlength: 10,
+                maxlength: 10, 
+            },
+            nombre_cli: {
+                required: true,
+            },
+            apellido_cli: {
+                required: true,
+            },
+            telefono_cli: {
+                required: true,
+                digits: true,  
+                minlength: 10,
+                maxlength: 10, 
+            },
+            correo_cli: {
+                required: true,
+                email: true,
+            }
+        },
+        messages: {
+            cedula_cli: {
+                required: "Por favor ingrese la cédula",
+                digits: "Por favor ingrese solo números",
+                minlength: "El teléfono debe tener 10 dígitos",
+                maxlength: "El teléfono debe tener 10 dígitos",
+            },
+            nombre_cli: {
+                required: "Por favor ingrese el nombre",
+            },
+            apellido_cli: {
+                required: "Por favor ingrese el apellido",
+            },
+            telefono_cli: {
+                required: "Por favor ingrese el teléfono",
+                digits: "Por favor ingrese solo números",
+                minlength: "El teléfono debe tener 10 dígitos",
+                maxlength: "El teléfono debe tener 10 dígitos",
+            },
+            correo_cli: {
+                required: "Por favor ingrese el correo electrónico",
+                email: "Por favor ingrese un correo válido",
+            },
+        }
+    });
+</script>
+{% endblock %}

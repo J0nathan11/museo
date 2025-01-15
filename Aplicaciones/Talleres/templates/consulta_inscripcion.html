@@ -1,0 +1,58 @@
+{% extends './plantilla.html' %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Consultar Inscripciones</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h4>Ingrese su Cédula</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" id="frm_consulta">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label for="cedula_cli">Cédula:</label>
+                            <input type="text" name="cedula_cli" id="cedula_cli" class="form-control" placeholder="Ingrese su cédula" required>
+                        </div>
+                        
+                        <div class="row mt-4" style="text-align: center;">
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-outline-primary btn-block">Consultar</button>
+                                &nbsp; &nbsp; &nbsp;
+                                <a href="{% url 'inicio' %}" class="btn btn-outline-secondary btn-block">Regresar</a>
+                            </div>
+                        </div>
+                    </form>
+
+                    {% if messages %}
+                        <div class="alert alert-danger mt-3">
+                            <ul>
+                                {% for message in messages %}
+                                    <li>{{ message }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // Validación simple para el formulario
+    $("#frm_consulta").validate({
+        rules: {
+            cedula_cli: {
+                required: true,
+            }
+        },
+        messages: {
+            cedula_cli: {
+                required: "Por favor ingrese un número de cédula",
+            }
+        }
+    });
+</script>
+{% endblock %}

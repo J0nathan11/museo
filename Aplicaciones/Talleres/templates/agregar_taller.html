@@ -1,0 +1,106 @@
+{% extends './plantilla.html' %}
+
+{% block body %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h4>Agregar Taller</h4>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{% url 'agregar_taller' %}" enctype="multipart/form-data" id="frm_taller">
+                        {% csrf_token %}
+
+                        <div class="form-group">
+                            <label for="tema_tall">Tema del Taller:</label>
+                            <input type="text" name="tema_tall" id="tema_tall" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fecha_tall">Fecha:</label>
+                            <input type="date" name="fecha_tall" id="fecha_tall" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="hora_tall">Hora:</label>
+                            <input type="time" name="hora_tall" id="hora_tall" class="form-control" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="estado_tall">Estado:</label>
+                            <select name="estado_tall" id="estado_tall" class="form-control">
+                                <option value="Disponible">Disponible</option>
+                                <option value="Agotado">Agotado</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="fk_id_org">Organizador:</label>
+                            <select name="fk_id_org" id="fk_id_org" class="form-control">
+                                {% for id_org, nombre_org in organizadores %}
+                                    <option value="{{ id_org }}">{{ nombre_org }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="foto_tall">Foto del Taller:</label>
+                            <input type="file" name="foto_tall" id="foto_tall" class="form-control" accept="image/*">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="descripcion_deta">Descripción del Taller:</label>
+                            <textarea name="descripcion_deta" id="descripcion_deta" class="form-control" rows="4" required></textarea>
+                        </div>
+
+                        <div class="text-center mt-4">
+                            <button type="submit" class="btn btn-outline-success"><i class="fas fa-save"></i> Guardar Taller</button>
+                            <a href="{% url 'listar_talleres_organizador' %}" class="btn btn-outline-primary"><i class="fas fa-sign-out-alt"></i> Regresar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // Validación simple para el formulario
+    $("#frm_taller").validate({
+        rules: {
+            tema_tall: {
+                required: true,
+            },
+            fecha_tall: {
+                required: true,
+            },
+            hora_tall: {
+                required: true,
+            },
+            foto_tall: {
+                required: true,
+            },
+            descripcion_deta: {
+                required: true,
+            }
+        },
+        messages: {
+            tema_tall: {
+                required: "Por favor ingrese el Tema",
+            },
+            fecha_tall: {
+                required: "Por favor seleccione la Fecha",
+            },
+            hora_tall: {
+                required: "Por favor seleccione la Hora",
+            },
+            foto_tall: {
+                required: "Por favor ingrese una foto",
+            },
+            descripcion_deta: {
+                required: "Por favor ingrese la Descripción",
+            },
+        }
+    });
+</script>
+{% endblock %}

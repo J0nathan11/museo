@@ -1,0 +1,58 @@
+{% extends './plantilla.html' %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2 style="text-align: center;">Talleres</h2>
+    <hr>
+    <div class="row">
+        {% for taller in talleres %}
+        <div class="col-md-3 mb-4">
+            <div class="card d-flex flex-column">
+                <div class="card-body flex-grow-1">
+                    <h5 class="card-title titulo-taller">{{ taller.tema_tall }}</h5> <!-- Tema del taller -->
+                    <p class="card-text"><strong>Fecha:</strong> {{ taller.fecha_tall }}</p> <!-- Fecha formateada -->
+                    <p class="card-text"><strong>Hora:</strong> {{ taller.hora_tall }}</p> <!-- Hora formateada -->
+                    <p class="card-text"><strong>Estado:</strong> {{ taller.estado_tall }}</p> <!-- Estado del taller -->
+                    <p class="card-text"><strong>Organizador:</strong> {{ taller.nombre_org }}</p> <!-- Organizador -->
+
+                    <!-- Mostrar la foto -->
+                    {% if taller.foto_base64 %}
+                    <img src="data:image/jpeg;base64,{{ taller.foto_base64 }}" class="img-fluid" alt="Foto del taller">
+                    {% else %}
+                    <p>No disponible</p>
+                    {% endif %}
+                </div>
+                <div class="text-center mt-2">
+                    <a href="{% url 'detalle_taller' taller.id_tall %}" class="btn btn-outline-success">Detalles</a>
+                    <br><br>
+                </div>
+            </div>
+        </div>
+
+        {% endfor %}
+    </div>
+
+    {% if not talleres %}
+    <div class="alert alert-warning mt-4" role="alert">
+        No hay talleres registrados.
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .titulo-taller {
+        color: #db3510;
+    }
+
+    /* Asegura que todas las tarjetas tengan la misma altura */
+    .card {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+    }
+
+    .card-body {
+        flex-grow: 1; /* Permite que el contenido ocupe todo el espacio disponible */
+    }
+</style>
+{% endblock %}

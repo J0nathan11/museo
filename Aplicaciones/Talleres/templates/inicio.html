@@ -1,0 +1,25 @@
+{% extends "./plantilla.html" %}
+{% load static %}
+{% block body %}
+
+<br>
+<h1 class="text-center">¡Bienvenido al Museo de Arte Contemporáneo!</h1>
+<br>
+<div class="container bg-ligth">
+    <div class="row">
+        <div class="col-11.5 text-center">
+            
+            <img src="{% static 'img/museo-inicio.jpg' %}" width="600" height="300">
+        </div>
+    </div>
+    <br><br>
+    <div class="row">
+        <div class="col-4"></div>
+        <div class="col-4 text-center">
+            <a href="{% url 'listar_talleres' %}" class="btn btn-warning"><i class="fa-solid fa-chalkboard-user"></i> Talleres </a>
+        </div>
+        <div class="col-4 text-center"></div>
+    </div>
+</div>
+<br>
+{% endblock %}

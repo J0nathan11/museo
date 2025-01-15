@@ -1,0 +1,64 @@
+{% extends "./plantilla.html" %}
+{% load base64_filters %}
+{% block body %}
+<br>
+<div class="card">
+    <div class="card-title text-center">
+        <h3><b>Talleres del Organizador</b></h3>
+    </div>
+</div>
+<br>
+<div class="text-center">
+    <a href="{% url 'agregar_taller' %}" class="btn btn-outline-success"><i class="fas fa-plus"></i> Agregar Taller</a>
+    <a href="{% url 'inicio' %}" class="btn btn-outline-primary"><i class="fas fa-sign-out-alt"></i> Salir</a>
+</div>
+<div class="container">
+    <table class="table table-bordered table-striped table-hover" id="tbl-Talleres">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tema</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Estado</th>
+                <th>Organizador</th>
+                <th>Foto</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for taller in talleres %}
+                <tr>
+                    <td>{{ taller.0 }}</td> <!-- id_tall -->
+                    <td>{{ taller.1 }}</td> <!-- tema_tall -->
+                    <td>{{ taller.2|date:"d/m/Y" }}</td> <!-- fecha_tall -->
+                    <td>{{ taller.3|time:"h:i A" }}</td> <!-- hora_tall -->
+                    <td>{{ taller.4 }}</td> <!-- estado_tall -->
+                    <td>{{ taller.6 }}</td> <!-- Nombre del organizador -->
+                    <td>
+                        {% if taller.5 %}
+                        <img src="data:image/jpeg;base64,{{ taller.5|b64encode }}" alt="Foto del taller" class="img-thumbnail" width="100">
+
+                        {% else %}
+                            No disponible
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'editar_taller' taller.0 %}" class="btn btn-outline-warning btn-circle" title="Editar Taller"><i class="fas fa-pencil"></i></a>
+                        <a href="{% url 'eliminar_taller' taller.0 %}" class="btn btn-outline-danger btn-circle" onclick="return confirm('¿Está seguro de eliminar este taller?')"><i class="fas fa-trash"></i></a>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="8">No hay talleres registrados.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    let table = new DataTable('#tbl-Talleres');
+</script>
+
+{% endblock %}

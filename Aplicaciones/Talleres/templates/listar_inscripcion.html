@@ -1,0 +1,38 @@
+{% extends './plantilla.html' %}
+
+{% block body %}
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Inscripciones</h2>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header text-center">
+                    <h4>Cédula: {{ cedula_cli }}</h4>
+                </div>
+                <div class="card-body">
+                    {% if inscripciones %}
+                        <ul>
+                            {% for inscripcion in inscripciones %}
+                                <li>
+                                    <strong style="color: rgb(224, 41, 41);">Tema del Taller:</strong> {{ inscripcion.0 }} <br>
+                                    <strong>Fecha del Taller:</strong> {{ inscripcion.1 }} <br>
+                                    <strong>Hora del Taller:</strong> {{ inscripcion.2 }} <br>
+                                    <strong style="color: rgb(8, 136, 40);">Fecha de Inscripción:</strong> {{ inscripcion.3 }} <br>
+                                </li>
+                                <hr>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>No tiene inscripciones.</p>
+                    {% endif %}
+                    
+                    <a href="{% url 'consultar_inscripcion' %}" class="btn btn-outline-secondary btn-block">Volver</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+
+</style>
+{% endblock %}
