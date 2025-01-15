@@ -6,14 +6,6 @@
     <hr>
     <div class="row">
         <div class="col-md-6">
-            <!-- Mostrar la foto -->
-            {% if foto_base64 %}
-            <img src="data:image/jpeg;base64,{{ foto_base64 }}" class="img-fluid" alt="Foto del taller">
-            {% else %}
-            <p>No disponible</p>
-            {% endif %}
-        </div>
-        <div class="col-md-6">
             <p><strong>Fecha:</strong> {{ fecha_tall }}</p>
             <p><strong>Hora:</strong> {{ hora_tall }}</p>
             <p><strong>Estado:</strong> {{ estado_tall }}</p>
@@ -21,9 +13,8 @@
         </div>
     </div>
     <div class="text-center mt-4">
-        <a href="{% url 'listar_talleres' %}" class="btn btn-outline-secondary ">Volver</a>
+        <a href="{% url 'listar_talleres' %}" class="btn btn-outline-secondary">Volver</a>
         <a href="{% url 'inscripcion_taller' id_tall=id_tall %}" class="btn btn-outline-primary">Inscripción</a>
-
     </div>
 </div>
 {% endblock %}

@@ -1,5 +1,4 @@
 {% extends './plantilla.html' %}
-{% load base64_filters %}
 {% block body %}
 <div class="container mt-5">
     <div class="row justify-content-center">
@@ -9,7 +8,7 @@
                     <h4>Editar Taller</h4>
                 </div>
                 <div class="card-body">
-                    <form method="POST" action="{% url 'editar_taller' taller.id_tall %}" enctype="multipart/form-data">
+                    <form method="POST" action="{% url 'editar_taller' taller.id_tall %}">
                         {% csrf_token %}
 
                         <div class="form-group">
@@ -45,20 +44,9 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="foto_tall">Foto del Taller (actual):</label>
-                            {% if taller.foto_tall %}
-                                <div class="mb-2">
-                                    <img src="data:image/jpeg;base64,{{ taller.foto_tall|b64encode }}" alt="Foto del Taller" class="img-thumbnail" width="200">
-                                </div>
-                            {% endif %}
-                            <input type="file" name="foto_tall" id="foto_tall" class="form-control" accept="image/*">
-                        </div>
-
-                        <div class="form-group">
                             <label for="descripcion_deta">Descripción del Taller:</label>
                             <textarea name="descripcion_deta" id="descripcion_deta" class="form-control">{{ taller.descripcion_deta }}</textarea>
                         </div>
-                        
 
                         <div class="text-center mt-4">
                             <button type="submit" class="btn btn-primary">Guardar Cambios</button>

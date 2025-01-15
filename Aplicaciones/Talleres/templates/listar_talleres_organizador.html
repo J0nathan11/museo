@@ -1,5 +1,4 @@
 {% extends "./plantilla.html" %}
-{% load base64_filters %}
 {% block body %}
 <br>
 <div class="card">
@@ -22,7 +21,6 @@
                 <th>Hora</th>
                 <th>Estado</th>
                 <th>Organizador</th>
-                <th>Foto</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -34,15 +32,7 @@
                     <td>{{ taller.2|date:"d/m/Y" }}</td> <!-- fecha_tall -->
                     <td>{{ taller.3|time:"h:i A" }}</td> <!-- hora_tall -->
                     <td>{{ taller.4 }}</td> <!-- estado_tall -->
-                    <td>{{ taller.6 }}</td> <!-- Nombre del organizador -->
-                    <td>
-                        {% if taller.5 %}
-                        <img src="data:image/jpeg;base64,{{ taller.5|b64encode }}" alt="Foto del taller" class="img-thumbnail" width="100">
-
-                        {% else %}
-                            No disponible
-                        {% endif %}
-                    </td>
+                    <td>{{ taller.5 }}</td> <!-- Nombre del organizador -->
                     <td>
                         <a href="{% url 'editar_taller' taller.0 %}" class="btn btn-outline-warning btn-circle" title="Editar Taller"><i class="fas fa-pencil"></i></a>
                         <a href="{% url 'eliminar_taller' taller.0 %}" class="btn btn-outline-danger btn-circle" onclick="return confirm('¿Está seguro de eliminar este taller?')"><i class="fas fa-trash"></i></a>
@@ -50,7 +40,7 @@
                 </tr>
             {% empty %}
                 <tr>
-                    <td colspan="8">No hay talleres registrados.</td>
+                    <td colspan="7">No hay talleres registrados.</td>
                 </tr>
             {% endfor %}
         </tbody>

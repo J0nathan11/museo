@@ -85,7 +85,7 @@ WSGI_APPLICATION = 'museo.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'museo',  # Nombre de tu base de datos
+        'NAME': 'museobd',  # Nombre de tu base de datos
         'USER': 'postgres',        # Usuario de PostgreSQL
         'PASSWORD': '12345',  # Contraseña del usuario
         'HOST': 'localhost',       # Dirección del servidor

@@ -14,13 +14,6 @@
                     <p class="card-text"><strong>Hora:</strong> {{ taller.hora_tall }}</p> <!-- Hora formateada -->
                     <p class="card-text"><strong>Estado:</strong> {{ taller.estado_tall }}</p> <!-- Estado del taller -->
                     <p class="card-text"><strong>Organizador:</strong> {{ taller.nombre_org }}</p> <!-- Organizador -->
-
-                    <!-- Mostrar la foto -->
-                    {% if taller.foto_base64 %}
-                    <img src="data:image/jpeg;base64,{{ taller.foto_base64 }}" class="img-fluid" alt="Foto del taller">
-                    {% else %}
-                    <p>No disponible</p>
-                    {% endif %}
                 </div>
                 <div class="text-center mt-2">
                     <a href="{% url 'detalle_taller' taller.id_tall %}" class="btn btn-outline-success">Detalles</a>

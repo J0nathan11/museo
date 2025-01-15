@@ -1,18 +1,11 @@
 from django.shortcuts import render, redirect
 from django.db import connection
-from django.contrib.auth.decorators import login_required
-from django.core.files.uploadedfile import InMemoryUploadedFile
-import base64
-from io import BytesIO
-from PIL import Image
+from django.contrib import messages
 
 def inicio(request):
     return render(request, 'inicio.html')
 
 #------------------------------INSERTAR DATOS CLIENTE---------------------------------
-from django.contrib import messages
-from django.shortcuts import render, redirect
-from django.db import connection
 
 def agregar_cliente(request):
     if request.method == 'POST':
@@ -30,7 +23,6 @@ def agregar_cliente(request):
             cursor.execute(query, [cedula, nombre, apellido, telefono, correo])
         
         messages.success(request, 'Cliente registrado y guardado con éxito')
-        
         return redirect('inicio') 
 
     return render(request, 'agregar_cliente.html')
@@ -38,7 +30,7 @@ def agregar_cliente(request):
 #---------------------------------VER TALLERES--------------------------------------------------
 def listar_talleres(request):
     query = """
-    SELECT t.id_tall, t.tema_tall, t.fecha_tall, t.hora_tall, t.estado_tall, t.foto_tall, o.nombre_org
+    SELECT t.id_tall, t.tema_tall, t.fecha_tall, t.hora_tall, t.estado_tall, o.nombre_org
     FROM talleres t
     JOIN organizador o ON t.fk_id_org = o.id_org
     """
@@ -46,36 +38,27 @@ def listar_talleres(request):
         cursor.execute(query)
         talleres = cursor.fetchall()
 
-    talleres_con_imagen = []
+    talleres_sin_imagen = []
     for taller in talleres:
-        id_tall, tema_tall, fecha_tall, hora_tall, estado_tall, foto_tall, nombre_org = taller
-        if foto_tall:
-            foto_base64 = base64.b64encode(foto_tall).decode('utf-8')
-        else:
-            foto_base64 = None
+        id_tall, tema_tall, fecha_tall, hora_tall, estado_tall, nombre_org = taller
 
-        talleres_con_imagen.append({
+        talleres_sin_imagen.append({
             'id_tall': id_tall,
             'tema_tall': tema_tall,
             'fecha_tall': fecha_tall,
             'hora_tall': hora_tall,
             'estado_tall': estado_tall,
             'nombre_org': nombre_org,
-            'foto_base64': foto_base64
         })
 
-    return render(request, 'listar_talleres.html', {'talleres': talleres_con_imagen})
+    return render(request, 'listar_talleres.html', {'talleres': talleres_sin_imagen})
+
 #---------------------------------DETALLE TALLER--------------------------------------
-from datetime import date
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from django.db import connection
 
 def detalle_taller(request, id_tall):
-
     with connection.cursor() as cursor:
         cursor.execute("""
-            SELECT t.id_tall, t.tema_tall, t.fecha_tall, t.hora_tall, t.estado_tall, t.foto_tall, d.descripcion_deta
+            SELECT t.id_tall, t.tema_tall, t.fecha_tall, t.hora_tall, t.estado_tall, d.descripcion_deta
             FROM talleres t
             LEFT JOIN detalles d ON t.id_tall = d.fk_id_tall
             WHERE t.id_tall = %s
@@ -83,18 +66,7 @@ def detalle_taller(request, id_tall):
         detalle = cursor.fetchone()
 
     if detalle:
-
-        id_tall, tema_tall, fecha_tall, hora_tall, estado_tall, foto_tall, descripcion_deta = detalle
-        foto_base64 = None
-        
-        if foto_tall:
-            import base64
-            from io import BytesIO
-            from PIL import Image
-            image = Image.open(BytesIO(foto_tall))
-            buffered = BytesIO()
-            image.save(buffered, format="JPEG")
-            foto_base64 = base64.b64encode(buffered.getvalue()).decode('utf-8')
+        id_tall, tema_tall, fecha_tall, hora_tall, estado_tall, descripcion_deta = detalle
 
         if not descripcion_deta:
             descripcion_deta = "No hay detalles para este taller."
@@ -105,11 +77,11 @@ def detalle_taller(request, id_tall):
             'fecha_tall': fecha_tall,
             'hora_tall': hora_tall,
             'estado_tall': estado_tall,
-            'foto_base64': foto_base64,
             'descripcion_deta': descripcion_deta
         })
     else:
-        return render(request, '404.html') 
+        return render(request, '404.html')
+
 
 
 #-----------------------------LOGIN ORGANIZADOR-----------------------------
@@ -152,7 +124,6 @@ def listar_talleres_organizador(request):
         t.fecha_tall, 
         t.hora_tall, 
         t.estado_tall, 
-        t.foto_tall, 
         o.nombre_org 
     FROM talleres t
     INNER JOIN organizador o ON t.fk_id_org = o.id_org
@@ -172,27 +143,13 @@ def agregar_taller(request):
         hora_tall = request.POST.get('hora_tall')
         estado_tall = request.POST.get('estado_tall')
         fk_id_org = request.POST.get('fk_id_org')
-        descripcion_deta = request.POST.get('descripcion_deta') 
-        foto_tall = request.FILES.get('foto_tall')
-
-        if foto_tall:
-
-            image = Image.open(foto_tall)
-            
-            if image.mode == 'RGBA':
-                image = image.convert('RGB')
-
-            img_byte_arr = BytesIO()
-            image.save(img_byte_arr, format='JPEG')  
-            img_byte_arr = img_byte_arr.getvalue()  
-        else:
-            img_byte_arr = None 
+        descripcion_deta = request.POST.get('descripcion_deta')
 
         with connection.cursor() as cursor:
             cursor.execute("""
-                INSERT INTO talleres (tema_tall, fecha_tall, hora_tall, estado_tall, fk_id_org, foto_tall)
-                VALUES (%s, %s, %s, %s, %s, %s) RETURNING id_tall
-            """, [tema_tall, fecha_tall, hora_tall, estado_tall, fk_id_org, img_byte_arr])
+                INSERT INTO talleres (tema_tall, fecha_tall, hora_tall, estado_tall, fk_id_org)
+                VALUES (%s, %s, %s, %s, %s) RETURNING id_tall
+            """, [tema_tall, fecha_tall, hora_tall, estado_tall, fk_id_org])
 
             id_tall = cursor.fetchone()[0]
 
@@ -208,7 +165,6 @@ def agregar_taller(request):
         with connection.cursor() as cursor:
             cursor.execute("SELECT id_org, nombre_org FROM organizador")
             organizadores = cursor.fetchall()
-
         return render(request, 'agregar_taller.html', {'organizadores': organizadores})
 
 #-------------------------------ELIMINAR-----------------------------------------
@@ -245,7 +201,7 @@ def editar_taller(request, id_tall):
         return redirect('login_organizador')
 
     query_taller = """
-    SELECT id_tall, tema_tall, fecha_tall, hora_tall, estado_tall, foto_tall, fk_id_org
+    SELECT id_tall, tema_tall, fecha_tall, hora_tall, estado_tall, fk_id_org
     FROM talleres
     WHERE id_tall = %s
     """
@@ -262,8 +218,7 @@ def editar_taller(request, id_tall):
         'fecha_tall': result[2],
         'hora_tall': result[3],
         'estado_tall': result[4],
-        'foto_tall': result[5],
-        'fk_id_org': result[6],
+        'fk_id_org': result[5],
     }
 
     query_descripcion = """
@@ -290,23 +245,16 @@ def editar_taller(request, id_tall):
         hora_tall = request.POST['hora_tall']
         estado_tall = request.POST['estado_tall']
         fk_id_org = request.POST['fk_id_org']
-        foto_tall = request.FILES.get('foto_tall')  
         descripcion_deta = request.POST.get('descripcion_deta')
-
-        if not foto_tall:
-            foto_tall = taller['foto_tall']
-        else:
-            foto_tall = foto_tall.read() 
 
         query_update = """
         UPDATE talleres
-        SET tema_tall = %s, fecha_tall = %s, hora_tall = %s, estado_tall = %s, fk_id_org = %s, foto_tall = %s
+        SET tema_tall = %s, fecha_tall = %s, hora_tall = %s, estado_tall = %s, fk_id_org = %s
         WHERE id_tall = %s
         """
         with connection.cursor() as cursor:
             cursor.execute(query_update, [
                 tema_tall, fecha_tall, hora_tall, estado_tall, fk_id_org,
-                foto_tall, 
                 id_tall
             ])
 
@@ -323,7 +271,6 @@ def editar_taller(request, id_tall):
         return redirect('listar_talleres_organizador')
 
     return render(request, 'editar_taller.html', {'taller': taller, 'organizadores': organizadores})
-
 
 #----------------------------INSCRIPCION----------------------------------
 from datetime import date
