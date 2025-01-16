@@ -1,0 +1,54 @@
+{% extends "./plantillaOrg.html" %}
+
+{% block body %}
+<br><br><br><br><br>
+<div class="card-title text-center">
+    <h3><b>Listado de Clientes</b></h3>
+</div>
+<br>
+<div class="text-center">
+    <a href="{% url 'inicio' %}" class="btn btn-outline-primary"><i class="fas fa-sign-out-alt"></i> Salir</a>
+</div>
+<div class="container" >
+    <table class="table table-bordered table-striped table-hover" id="tbl-Clientes"  width="90%">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cédula</th>
+                <th>Nombre</th>
+                <th>Apellido</th>
+                <th>Teléfono</th>
+                <th>Correo</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cliente in clientes %}
+                <tr>
+                    <td>{{ cliente.0 }}</td> <!-- id_cli -->
+                    <td>{{ cliente.1 }}</td> <!-- cedula_cli -->
+                    <td>{{ cliente.2 }}</td> <!-- nombre_cli -->
+                    <td>{{ cliente.3 }}</td> <!-- apellido_cli -->
+                    <td>{{ cliente.4 }}</td> <!-- telefono_cli -->
+                    <td>{{ cliente.5 }}</td> <!-- correo_cli -->
+                    <td>
+                        <a href="{% url 'editar_cliente' cliente.0 %}" class="btn btn-outline-warning btn-circle" title="Editar Cliente"><i class="fas fa-pencil"></i></a>
+                        <a href="{% url 'eliminar_cliente' cliente.0 %}" class="btn btn-outline-danger btn-circle" onclick="return confirm('¿Está seguro de eliminar este cliente?')"><i class="fas fa-trash"></i>
+</a>
+                    </td>
+                    
+                </tr>
+            {% empty %}
+                <tr>
+                    <td colspan="7">No hay clientes registrados.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script>
+    let table = new DataTable('#tbl-Clientes');
+</script>
+
+{% endblock %}

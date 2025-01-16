@@ -52,6 +52,67 @@ def listar_talleres(request):
         })
 
     return render(request, 'listar_talleres.html', {'talleres': talleres_sin_imagen})
+#--------------------------------LISTAR CLIENTE ORGANIZADOR-----------------------------------------
+def listar_clientes_organizador(request):
+
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM clientes")
+    clientes = cursor.fetchall()
+
+    return render(request, 'listar_clientes_organizador.html', {'clientes': clientes})
+#---------------------------------EDITAR CLIENTE-------------------------------------------------------------
+def editar_cliente(request, id_cli):
+    # Realizar la consulta SQL para obtener los datos del cliente
+    cursor = connection.cursor()
+    cursor.execute("SELECT * FROM clientes WHERE id_cli = %s", [id_cli])
+    cliente = cursor.fetchone()
+
+    if request.method == 'POST':
+        # Obtener los datos del formulario
+        cedula_cli = request.POST.get('cedula_cli')
+        nombre_cli = request.POST.get('nombre_cli')
+        apellido_cli = request.POST.get('apellido_cli')
+        telefono_cli = request.POST.get('telefono_cli')
+        correo_cli = request.POST.get('correo_cli')
+
+        # Actualizar el cliente en la base de datos
+        cursor.execute("""
+            UPDATE clientes
+            SET cedula_cli = %s, nombre_cli = %s, apellido_cli = %s, telefono_cli = %s, correo_cli = %s
+            WHERE id_cli = %s
+        """, [cedula_cli, nombre_cli, apellido_cli, telefono_cli, correo_cli, id_cli])
+
+        # Redirigir al listado de clientes
+        return redirect('listar_clientes_organizador')
+
+    return render(request, 'editar_cliente.html', {'cliente': cliente})
+
+#-------------- -----------------------------------------ELIMINAR CLIENTE-----------------------------------------
+def eliminar_cliente(request, id_cli):
+    if 'id_org' not in request.session:
+        return redirect('login_organizador')
+
+    # Eliminar los registros relacionados en la tabla inscripcion
+    query_inscripcion = """
+    DELETE FROM inscripcion
+    WHERE fk_id_cli = %s
+    """
+    with connection.cursor() as cursor:
+        cursor.execute(query_inscripcion, [id_cli])
+
+    # Luego eliminar el cliente
+    query_cliente = """
+    DELETE FROM clientes
+    WHERE id_cli = %s
+    """
+    with connection.cursor() as cursor:
+        cursor.execute(query_cliente, [id_cli])
+
+    # Mostrar mensaje de éxito
+    messages.success(request, 'Cliente y sus registros relacionados eliminados con éxito.')
+
+    return redirect('listar_clientes_organizador')
+
 
 #---------------------------------DETALLE TALLER--------------------------------------
 
@@ -332,15 +393,14 @@ def consultar_inscripcion(request):
 
 
 def listar_inscripcion(request, cedula_cli):
-  
     with connection.cursor() as cursor:
         cursor.execute("""
-            SELECT id_cli FROM clientes WHERE cedula_cli = %s
+            SELECT id_cli, nombre_cli FROM clientes WHERE cedula_cli = %s
         """, [cedula_cli])
         cliente = cursor.fetchone()
 
     if cliente:
-        id_cli = cliente[0]
+        id_cli, nombre_cli = cliente
 
         with connection.cursor() as cursor:
             cursor.execute("""
@@ -351,7 +411,11 @@ def listar_inscripcion(request, cedula_cli):
             """, [id_cli])
             inscripciones = cursor.fetchall()
 
-        return render(request, 'listar_inscripcion.html', {'inscripciones': inscripciones, 'cedula_cli': cedula_cli})
+        return render(request, 'listar_inscripcion.html', {
+            'inscripciones': inscripciones,
+            'cedula_cli': cedula_cli,
+            'nombre_cli': nombre_cli
+        })
     else:
         messages.error(request, 'No se encontró un cliente con la cédula proporcionada.')
         return redirect('consultar_inscripcion')

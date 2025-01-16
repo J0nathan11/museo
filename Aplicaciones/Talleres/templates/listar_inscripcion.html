@@ -7,7 +7,8 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header text-center">
-                    <h4>Cédula: {{ cedula_cli }}</h4>
+                    <!--<h5>Cédula: {{ cedula_cli }}</h5>-->
+                    <h5>Nombre: {{ nombre_cli }}</h5>
                 </div>
                 <div class="card-body">
                     {% if inscripciones %}
@@ -26,7 +27,9 @@
                         <p>No tiene inscripciones.</p>
                     {% endif %}
                     
-                    <a href="{% url 'consultar_inscripcion' %}" class="btn btn-outline-secondary btn-block">Volver</a>
+                    <div class="text-center">
+                        <a href="{% url 'consultar_inscripcion' %}" class="btn btn-outline-secondary btn-block">Volver</a>
+                    </div>
                 </div>
             </div>
         </div>

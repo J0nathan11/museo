@@ -5,6 +5,12 @@ urlpatterns = [
     path('', views.inicio, name='inicio'),
     #---------------------------------------CLIENTE-------------------------------
     path('agregar-cliente/', views.agregar_cliente, name='agregar_cliente'),
+    #Listado cliente
+    path('clientes/', views.listar_clientes_organizador, name='listar_clientes_organizador'),
+    #EDITAR
+    path('editar_cliente/<int:id_cli>/', views.editar_cliente, name='editar_cliente'),
+    #ELIMINAR
+    path('eliminar_cliente/<int:id_cli>/', views.eliminar_cliente, name='eliminar_cliente'),
 
     #----------------------------------VER TALLERES------------------------------
     path('listar-talleres/', views.listar_talleres, name='listar_talleres'),
@@ -25,10 +31,10 @@ urlpatterns = [
     #---------------------------------INSCRIPCION--------------------------------------------------------------------
     path('inscripcion/<int:id_tall>/', views.inscripcion_taller, name='inscripcion_taller'),
     
-    # Ruta para consultar la cédula
+    # Consultar la cédula
     path('consultar-inscripcion/', views.consultar_inscripcion, name='consultar_inscripcion'),
 
-    # Ruta para listar las inscripciones de un cliente basado en la cédula
+    # Ruta para listar las inscripciones de un cliente 
     path('listar-inscripcion/<str:cedula_cli>/', views.listar_inscripcion, name='listar_inscripcion'),
     
 
